@@ -5,7 +5,7 @@
 				<menu-tab></menu-tab>
 			</el-aside>
 			<el-main>
-				<book-list></book-list>
+				<add-book></add-book>
 			</el-main>
 		</el-container>
 	</div>
@@ -13,10 +13,10 @@
 
 <script>
 import MenuTab from '@/components/MenuTab'
-import BookList from '@/components/BookList'
+import AddBook from '@/components/AddBook'
 
 export default {
 	name: 'home',
-	components: {MenuTab, BookList}
+	components: {MenuTab, AddBook}
 }
 </script>
