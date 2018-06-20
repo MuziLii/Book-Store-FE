@@ -19,7 +19,7 @@
                 </el-table-column>
                 <el-table-column label="价格" width="70">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.number }}</span>
+                        <span>{{ scope.row.price }}</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
     name: 'BookList',
     data() {

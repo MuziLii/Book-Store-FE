@@ -7,9 +7,14 @@
                 </el-col>
                 <el-col :span="6">
 					<el-row type="flex" justify="end" class="user">
-						<div><span>Alex, Welcome!</span></div>
-						<div><el-button type="text" @click="$router.push('/login')">登陆</el-button></div>
-						<div><el-button type="text" @click="$router.push('/regist')">注册</el-button></div>
+						<div v-if="user.id">
+							<span class="item">{{user.nickname}}, welcome!</span>
+							<el-button type="info" size="mini" plain class="item" @click="logoutAction">注销</el-button>
+						</div>
+						<div v-else class="inline">
+							<div class="item"><el-button type="text" @click="$router.push('/login')">登陆</el-button></div>
+							<div class="item"><el-button type="text" @click="$router.push('/register')">注册</el-button></div>
+						</div>
 					</el-row>
                 </el-col>
             </el-row>
@@ -19,15 +24,15 @@
 </template>
 
 <script>
+import {mapState, mapActions} from 'vuex'
+
 export default {
-    methods: {
-      submitForm(formName) {
-        
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      }
-    }
+	methods: {
+		...mapActions(['logoutAction'])
+	},
+    computed: {
+		...mapState(['user'])
+	}
 }
 </script>
 
@@ -49,8 +54,11 @@ body {
 	}
 	.user {
 		line-height: 60px;
-		div {
+		.item {
 			margin-left: 20px;
+		}
+		.inline {
+			display: flex;
 		}
 	}
 }
