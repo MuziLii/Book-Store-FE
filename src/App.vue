@@ -9,7 +9,7 @@
 					<el-row type="flex" justify="end" class="user">
 						<div v-if="user.id">
 							<span class="item">{{user.nickname}}, welcome!</span>
-							<el-button type="info" size="mini" plain class="item" @click="logoutAction">注销</el-button>
+							<el-button type="info" size="mini" plain class="item" @click="logout">注销</el-button>
 						</div>
 						<div v-else class="inline">
 							<div class="item"><el-button type="text" @click="$router.push('/login')">登陆</el-button></div>
@@ -28,7 +28,11 @@ import {mapState, mapActions} from 'vuex'
 
 export default {
 	methods: {
-		...mapActions(['logoutAction'])
+		...mapActions(['logoutAction']),
+		logout() {
+			this.logoutAction()
+			this.$router.push('/')
+		}
 	},
     computed: {
 		...mapState(['user'])

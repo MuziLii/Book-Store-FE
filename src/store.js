@@ -5,16 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		user: {}
+		user: {},
+		cart: []
 	},
 	mutations: {
 		login(state, user) {
 			state.user = user
 		},
 		logout(state) {
-			console.log(state.user)
 			state.user = {}
-			console.log(state.user)
+			state.cart = []
+		},
+		setCart(state, cart) {
+			state.cart = cart
 		}
 	},
 	actions: {
@@ -23,6 +26,9 @@ export default new Vuex.Store({
 		},
 		logoutAction({commit}) {
 			commit('logout')
+		},
+		setCartAction({commit}, cart) {
+			commit('setCart', cart)
 		}
 	}
 })

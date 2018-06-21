@@ -7,6 +7,7 @@ import Home from './views/Home'
 import Order from './views/Order'
 import Add from './views/Add'
 import ManageOrder from './views/ManageOrder'
+import Cart from './views/Cart'
 
 Vue.use(Router)
 
@@ -35,6 +36,10 @@ export default new Router({
 		{
 			path: '/order_manage',
 			component: ManageOrder
+		},
+		{
+			path: '/cart',
+			component: Cart
 		}
 	]
 })
