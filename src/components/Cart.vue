@@ -40,15 +40,20 @@
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
     name: 'Cart',
-    methods: {
-        ...mapActions(['setCartAction'])
-    },
     computed: {
-        ...mapState(['user', 'cart']),
+        ...mapState(['user']),
+        cart : {
+            get() {
+                return this.$store.state.cart
+            },
+            set(data) {
+                this.$store.commit('setCartAction', data)
+            }
+        },
         totalPay() {
             let total = 0
             for (let index = 0; index < this.cart.length; index++) {
