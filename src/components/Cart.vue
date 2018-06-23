@@ -34,13 +34,14 @@
         </div>
         <br>
         <el-row type="flex" justify="center">
-            <el-button type="danger">提交订单</el-button>
+            <el-button type="danger" @click="submitOrder">提交订单</el-button>
         </el-row>
     </div>
 </template>
 
 <script>
 import {mapState, mapActions} from 'vuex'
+import api from '@/api'
 
 export default {
     name: 'Cart',
@@ -67,6 +68,7 @@ export default {
             }
             this.setCartAction(cart_data)
             this.setTotalPay()
+            console.log(cart_data)
         },
         setTotalPay() {
             let total = 0
@@ -75,6 +77,19 @@ export default {
                 total += element['price'] * element['number']
             }
             this.totalPay = total
+        },
+        submitOrder() {
+            let that = this
+            api.order.add(that.user, that.cart).then(function(resp) {
+                if(resp.data.code == 401) {
+                    that.$message.warning("权限不足")        
+                } else if (resp.data.code == 200) {
+                    that.$message.success("提交成功")
+                }
+            }).catch(function (err) {
+                console.log(err)
+                that.$message.error("网络错误")    
+            })
         }
     },
     computed: {
