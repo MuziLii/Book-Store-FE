@@ -1,11 +1,10 @@
-import axios from 'axios'
-import { serverRoot } from './config'
+import { serverRoot, http } from './config'
 
 export default {
     fetchAll() {
-        return axios.get(serverRoot + '/book/all')
+        return http.get(serverRoot + '/book/all')
     },
     add(form) {
-        return axios.post(serverRoot + '/book/add', form)
-    },
+        return http.post(serverRoot + '/book/add', form)
+    }
 }

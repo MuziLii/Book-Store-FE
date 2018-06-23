@@ -65,8 +65,13 @@ export default {
         fetchData() {
             let that = this
             api.book.fetchAll().then(function(resp) {
-                that.books = resp.data
+                if(resp.data.code == 401) {
+                    that.$message.warning("权限不足")        
+                } else if (resp.data.code == 200) {
+                    that.books = resp.data.data
+                }
             }).catch(function (err) {
+                console.log(err)
                 that.$message.error("网络错误")    
             })
         },

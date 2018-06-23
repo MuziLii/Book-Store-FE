@@ -54,9 +54,10 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     api.user.auth(that.loginForm).then(function(resp) {
-                        if(resp.data.id) {
+                        if(resp.data.data) {
                             that.$message.success('登录成功')
-                            that.loginAction(resp.data)
+                            that.loginAction(resp.data.data)
+                            sessionStorage.setItem("$token", resp.data.msg)
                             that.$router.push('/')
                         } else {
                             that.$message.error('登录失败')

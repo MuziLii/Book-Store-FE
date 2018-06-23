@@ -31,7 +31,7 @@ export default {
 		...mapActions(['logoutAction']),
 		logout() {
 			this.logoutAction()
-			this.$router.push('/')
+			location.href = "/"
 		}
 	},
     computed: {

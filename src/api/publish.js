@@ -1,17 +1,16 @@
-import axios from 'axios'
-import { serverRoot } from './config'
+import { serverRoot, http } from './config'
 
 export default {
     fetchAll() {
-        return axios.get(serverRoot + '/publish/all')
+        return http.get(serverRoot + '/publish/all')
     },
     add(name) {
-        return axios.post(serverRoot + '/publish/add', {
+        return http.post(serverRoot + '/publish/add', {
             name: name
         })
     },
     delete(id) {
-        return axios.post(serverRoot + '/publish/delete', {
+        return http.post(serverRoot + '/publish/delete', {
             id: id
         })
     }

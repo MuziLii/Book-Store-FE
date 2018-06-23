@@ -15,6 +15,7 @@ export default new Vuex.Store({
 		logout(state) {
 			state.user = {}
 			state.cart = []
+			sessionStorage.removeItem('$token')
 		},
 		setCart(state, cart) {
 			state.cart = cart

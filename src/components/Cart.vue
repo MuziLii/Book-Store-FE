@@ -20,7 +20,7 @@
                 </el-table-column>
                 <el-table-column label="数量">
                     <template slot-scope="scope">
-                        <el-input type="number" v-model="scope.row.number" class="num"></el-input>
+                        <el-input type="number" @change="changeNum($event, scope.row.id)" :value="scope.row.number" class="num"></el-input>
                     </template>
                 </el-table-column>
             </el-table>
@@ -40,28 +40,45 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 export default {
     name: 'Cart',
-    computed: {
-        ...mapState(['user']),
-        cart : {
-            get() {
-                return this.$store.state.cart
-            },
-            set(data) {
-                this.$store.commit('setCartAction', data)
+    data() {
+        return {
+            totalPay: 0
+        }
+    },
+    mounted() {
+        this.setTotalPay()
+    },
+    methods: {
+        ...mapActions(['setCartAction']),
+        changeNum(value, id) {
+            let cart_data = this.cart
+            for (let index = 0; index < cart_data.length; index++) {
+                if(cart_data[index]['id'] == id ) {
+                    cart_data[index]['number'] = value
+                    if(value <= 0) {
+                        cart_data.splice(index, 1)
+                    }
+                    break
+                }
             }
+            this.setCartAction(cart_data)
+            this.setTotalPay()
         },
-        totalPay() {
+        setTotalPay() {
             let total = 0
             for (let index = 0; index < this.cart.length; index++) {
                 const element = this.cart[index];
                 total += element['price'] * element['number']
             }
-            return total
+            this.totalPay = total
         }
+    },
+    computed: {
+        ...mapState(['user','cart'])
     }
 }
 </script>
