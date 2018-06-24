@@ -150,7 +150,7 @@ export default {
                 if(resp.data.code == 200) {
                     that.$message.success("修改成功")
                     that.fetchData()
-                    dialogFormVisible = false   
+                    that.dialogFormVisible = false   
                 } else if(resp.data.code == 401) {
                     that.$message.warning("无权访问")
                 } else {
