@@ -81,13 +81,14 @@ export default {
         submitOrder() {
             let that = this
             api.order.add(that.user, that.cart).then(function(resp) {
-                if(resp.data.code == 401) {
-                    that.$message.warning("权限不足")        
-                } else if (resp.data.code == 200) {
-                    that.$message.success("提交成功")
+                if(resp.data.code == 200) {
+                    that.$message.success("提交成功")   
+                } else if(resp.data.code == 401) {
+                    that.$message.warning("无权访问")
+                } else {
+                    that.$message.error("获取失败")        
                 }
             }).catch(function (err) {
-                console.log(err)
                 that.$message.error("网络错误")    
             })
         }

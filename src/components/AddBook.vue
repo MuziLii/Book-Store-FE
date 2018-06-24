@@ -1,7 +1,7 @@
 <template>
     <div class="view">
         <el-card>
-            <el-form :model="bookForm" status-icon label-width="100px" class="demo-ruleForm">
+            <el-form :model="bookForm" status-icon label-width="100px">
                 <el-form-item label="书名">
                     <el-input type="text" v-model="bookForm.name"></el-input>
                 </el-form-item>
@@ -46,7 +46,13 @@ export default {
         fetchData() {
             let that = this
             api.publish.fetchAll().then(function(resp) {
-                that.pubs = resp.data
+                if(resp.data.code == 200) {
+                    that.pubs = resp.data.data
+                } else if(resp.data.code == 401) {
+                    that.$message.warning("无权访问")
+                } else {
+                    that.$message.error("获取失败")        
+                }
             }).catch(function (err) {
                 that.$message.error("网络错误")    
             })
@@ -58,9 +64,13 @@ export default {
                 cancelButtonText: '取消'
             }).then(({ value }) => {
                 api.publish.add(value).then(function(resp) {
-                    if(resp.data > 0) {
+                    if(resp.data.code == 200) {
                         that.$message.success("添加成功")    
                         that.fetchData();
+                    } else if(resp.data.code == 401) {
+                        that.$message.warning("无权访问")
+                    } else {
+                        that.$message.error("获取失败")        
                     }
                 }).catch(function (err) {
                     that.$message.error("网络错误")    
@@ -70,9 +80,13 @@ export default {
         submitForm() {
             let that = this
             api.book.add(that.bookForm).then(function(resp) {
-                if(resp.data > 0) {
+                if(resp.data.code == 200) {
                     that.$message.success("添加成功")    
                     that.fetchData();
+                } else if(resp.data.code == 401) {
+                    that.$message.warning("无权访问")
+                } else {
+                    that.$message.error("获取失败")        
                 }
             }).catch(function (err) {
                 that.$message.error("网络错误")    

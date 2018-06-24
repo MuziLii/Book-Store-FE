@@ -32,8 +32,8 @@
                 <el-table-column label="操作" width="200" v-if="user.role">
                     <template slot-scope="scope">
                         <div v-show="user.role &&　user.role.name == 'ADMIN'">
-                            <el-button size="mini" @click="handleEdit(scope.$index)">编辑</el-button>
-                            <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+                            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+                            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                         </div>
                         <div v-show="user.role && user.role.name == 'NORMAL'">
                             <el-button size="mini" @click="addToCart(scope.row)"
@@ -43,6 +43,28 @@
                 </el-table-column>
             </el-table>
         </el-card>
+        <el-dialog title="修改图书" :visible.sync="dialogFormVisible">
+            <el-form :model="editForm">
+                <el-form-item label="书名">
+                    <el-input type="text" v-model="editForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="出版社">
+                    <div class="inline-form">
+                        <el-select default-first-option v-model="editForm.publish.id">
+                            <el-option v-for="item in pubs" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                        </el-select>
+                        <el-button plain class="item" @click="addPublish">添加出版社</el-button>
+                    </div>
+                </el-form-item>
+                <el-form-item label="价格">
+                    <el-input type="number" v-model="editForm.price"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitEdit">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -54,7 +76,17 @@ export default {
     name: 'BookList',
     data() {
         return {
-            books: []
+            books: [],
+            editForm: {
+                id: '',
+                name: '',
+                publish: {
+                    id: ''
+                },
+                price: 0
+            },
+            pubs: [],
+            dialogFormVisible: false
         }
     },
     mounted() {
@@ -65,21 +97,69 @@ export default {
         fetchData() {
             let that = this
             api.book.fetchAll().then(function(resp) {
-                if(resp.data.code == 401) {
-                    that.$message.warning("权限不足")        
-                } else if (resp.data.code == 200) {
+                if(resp.data.code == 200) {
                     that.books = resp.data.data
+                } else if(resp.data.code == 401) {
+                    that.$message.warning("无权访问")
+                } else {
+                    that.$message.error("获取失败")        
                 }
             }).catch(function (err) {
                 console.log(err)
                 that.$message.error("网络错误")    
             })
+            
+            api.publish.fetchAll().then(function(resp) {
+                if(resp.data.code == 200) {
+                    that.pubs = resp.data.data
+                } else if(resp.data.code == 401) {
+                    that.$message.warning("无权访问")
+                } else {
+                    that.$message.error("获取失败")        
+                }
+            }).catch(function (err) {
+                that.$message.error("网络错误")    
+            })
         },
-        handleEdit(index) {
-
+        handleEdit(row) {
+            let that = this
+            that.dialogFormVisible = true
+            that.editForm.id = row.id
+            that.editForm.name = row.name
+            that.editForm.price = row.price
+            that.editForm.publish = row.publish
         },
-        handleDelete(index) {
-
+        handleDelete(id) {
+            let that = this
+            api.book.delete(id).then(function(resp) {
+                if(resp.data.code == 200) {
+                    that.$message.success("删除成功")
+                    that.fetchData()
+                } else if(resp.data.code == 401) {
+                    that.$message.warning("无权访问")
+                } else {
+                    that.$message.error("删除失败")        
+                }
+            }).catch(function (err) {
+                that.$message.error("网络错误")    
+            })
+        },
+        submitEdit() {
+            let that = this
+            api.book.update(that.editForm).then(function(resp) {
+                if(resp.data.code == 200) {
+                    that.$message.success("修改成功")
+                    that.fetchData()
+                    dialogFormVisible = false   
+                } else if(resp.data.code == 401) {
+                    that.$message.warning("无权访问")
+                } else {
+                    that.$message.error("获取失败")        
+                }
+            }).catch(function (err) {
+                console.log(err)
+                that.$message.error("网络错误")    
+            })
         },
         addToCart(book) {
             let id = book['id']
@@ -97,6 +177,26 @@ export default {
                 cart_data.push(book)
             }
             this.setCartAction(cart_data)
+        },
+        addPublish() {
+            let that = this
+            that.$prompt("请输入出版社名称", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+            }).then(({ value }) => {
+                api.publish.add(value).then(function(resp) {
+                    if(resp.data.code == 200) {
+                        that.$message.success("添加成功")   
+                        that.fetchData()
+                    } else if(resp.data.code == 401) {
+                        that.$message.warning("无权访问")
+                    } else {
+                        that.$message.error("获取失败")        
+                    }
+                }).catch(function (err) {
+                    that.$message.error("网络错误")    
+                })
+            }).catch(() => {})
         }
     },
     computed: {
@@ -112,5 +212,11 @@ export default {
 }
 .extra {
     padding: 10px 0;
+}
+.inline-form {
+    display: flex;
+    .item {
+        margin-left: 40px;
+    }
 }
 </style>

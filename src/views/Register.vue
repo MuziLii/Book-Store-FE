@@ -81,11 +81,13 @@ export default {
             that.$refs[formName].validate((valid) => {
                 if (valid) {
                     api.user.register(that.registerForm).then(function(resp) {
-                        if(resp.data > 0) {
+                        if(resp.data.code == 200) {
                             that.$message.success("注册成功")  
                             that.$router.push("/login")
+                        } else if(resp.data.code == 401) {
+                            that.$message.warning("无权访问")
                         } else {
-                            that.$message.error("注册失败")        
+                            that.$message.error("注册失败")         
                         }
                     }).catch(function (err) {
                         that.$message.error("网络错误")    
