@@ -54,7 +54,7 @@ export default {
         this.setTotalPay()
     },
     methods: {
-        ...mapActions(['setCartAction']),
+        ...mapActions(['setCartAction', 'setUserAction']),
         changeNum(value, id) {
             let cart_data = this.cart
             for (let index = 0; index < cart_data.length; index++) {
@@ -80,14 +80,22 @@ export default {
         },
         submitOrder() {
             let that = this
+            if (that.totalPay > that.user.balance) {
+                return that.$message.warning("余额不足")
+            }
             api.order.add(that.user, that.cart).then(function(resp) {
                 if(resp.data.code == 200) {
                     that.$message.success("提交成功")   
+                } else if(resp.data.code == 700) {
+                    that.$message.warning("余额不足")
                 } else if(resp.data.code == 401) {
                     that.$message.warning("无权访问")
                 } else {
                     that.$message.error("获取失败")        
                 }
+                that.user.balance = that.user.balance - that.totalPay
+                that.setUserAction(that.user)
+                that.setCartAction([])
             }).catch(function (err) {
                 that.$message.error("网络错误")    
             })

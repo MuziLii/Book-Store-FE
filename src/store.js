@@ -9,7 +9,7 @@ export default new Vuex.Store({
 		cart: []
 	},
 	mutations: {
-		login(state, user) {
+		setUser(state, user) {
 			state.user = user
 		},
 		logout(state) {
@@ -23,13 +23,16 @@ export default new Vuex.Store({
 	},
 	actions: {
 		loginAction({commit}, user) {
-			commit('login', user)
+			commit('setUser', user)
 		},
 		logoutAction({commit}) {
 			commit('logout')
 		},
 		setCartAction({commit}, cart) {
 			commit('setCart', cart)
+		},
+		setUserAction({commit}, user) {
+			commit('setUser', user)
 		}
 	}
 })
